@@ -12,6 +12,7 @@ class RoutineTimer {
         this.bindEvents();
         this.renderRoutines();
         this.updateNotificationStatus();
+        this.setupServiceWorkerMessageListener();
     }
 
     async registerServiceWorker() {
@@ -132,6 +133,11 @@ class RoutineTimer {
 
         this.stopTimer(id);
         this.showNotification(routine.name);
+        
+        // タイマー完了後に自動再開
+        setTimeout(() => {
+            this.startTimer(id);
+        }, 1000);
     }
 
     updateTimerDisplay(id, remainingTime) {
@@ -144,26 +150,48 @@ class RoutineTimer {
     }
 
     async showNotification(routineName) {
+        // 音声アラートも追加（iOS PWA対応）
+        this.playNotificationSound();
+        
+        // 画面に視覚的な通知も表示
+        this.showVisualAlert(routineName);
+        
         if (this.notificationPermission === 'granted') {
-            if ('serviceWorker' in navigator && 'showNotification' in ServiceWorkerRegistration.prototype) {
-                const registration = await navigator.serviceWorker.getRegistration();
-                if (registration) {
-                    registration.showNotification(`${routineName} 完了！`, {
-                        body: `${routineName}の時間が終了しました。`,
-                        icon: './img/favicon/android-chrome-192x192.png',
-                        badge: './img/favicon/android-chrome-192x192.png',
-                        vibrate: [200, 100, 200],
-                        tag: 'routine-complete',
-                        requireInteraction: true
-                    });
-                    return;
+            try {
+                // iOS PWAでの通知改善
+                if ('serviceWorker' in navigator && 'showNotification' in ServiceWorkerRegistration.prototype) {
+                    const registration = await navigator.serviceWorker.getRegistration();
+                    if (registration) {
+                        await registration.showNotification(`${routineName} 完了！`, {
+                            body: `${routineName}の時間が終了しました。タイマーが再開されます。`,
+                            icon: './img/favicon/android-chrome-192x192.png',
+                            badge: './img/favicon/android-chrome-192x192.png',
+                            vibrate: [300, 100, 300, 100, 300],
+                            tag: 'routine-complete',
+                            requireInteraction: false,
+                            silent: false,
+                            timestamp: Date.now(),
+                            actions: [
+                                {
+                                    action: 'stop',
+                                    title: '停止',
+                                    icon: './img/favicon/favicon-32x32.png'
+                                }
+                            ]
+                        });
+                        return;
+                    }
                 }
+                
+                // フォールバック通知
+                new Notification(`${routineName} 完了！`, {
+                    body: `${routineName}の時間が終了しました。タイマーが再開されます。`,
+                    icon: './img/favicon/android-chrome-192x192.png',
+                    requireInteraction: false
+                });
+            } catch (error) {
+                console.log('通知の表示に失敗:', error);
             }
-            
-            new Notification(`${routineName} 完了！`, {
-                body: `${routineName}の時間が終了しました。`,
-                icon: './img/favicon/android-chrome-192x192.png'
-            });
         }
     }
 
@@ -238,6 +266,74 @@ class RoutineTimer {
 
     saveRoutines() {
         localStorage.setItem('routines', JSON.stringify(this.routines));
+    }
+
+    playNotificationSound() {
+        // iOS PWA対応: 音声アラート
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.setValueAtTime(880, audioContext.currentTime);
+        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.3);
+        
+        // 複数回鳴らす
+        setTimeout(() => {
+            const oscillator2 = audioContext.createOscillator();
+            const gainNode2 = audioContext.createGain();
+            
+            oscillator2.connect(gainNode2);
+            gainNode2.connect(audioContext.destination);
+            
+            oscillator2.frequency.setValueAtTime(660, audioContext.currentTime);
+            gainNode2.gain.setValueAtTime(0.1, audioContext.currentTime);
+            
+            oscillator2.start(audioContext.currentTime);
+            oscillator2.stop(audioContext.currentTime + 0.3);
+        }, 400);
+    }
+
+    showVisualAlert(routineName) {
+        // 画面上にアラート表示
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'completion-alert';
+        alertDiv.innerHTML = `
+            <div class="alert-content">
+                <h3>🎉 ${routineName} 完了！</h3>
+                <p>タイマーが自動で再開されます</p>
+                <button onclick="this.parentElement.parentElement.remove()">閉じる</button>
+            </div>
+        `;
+        
+        document.body.appendChild(alertDiv);
+        
+        // 5秒後に自動削除
+        setTimeout(() => {
+            if (alertDiv.parentNode) {
+                alertDiv.remove();
+            }
+        }, 5000);
+    }
+
+    setupServiceWorkerMessageListener() {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.addEventListener('message', (event) => {
+                if (event.data.action === 'stopAllTimers') {
+                    // 全てのアクティブタイマーを停止
+                    this.routines.forEach(routine => {
+                        if (routine.isActive) {
+                            this.stopTimer(routine.id);
+                        }
+                    });
+                }
+            });
+        }
     }
 }
 

@@ -37,14 +37,30 @@ self.addEventListener('fetch', (event) => {
 self.addEventListener('notificationclick', (event) => {
     event.notification.close();
     
-    event.waitUntil(
-        clients.matchAll().then((clientList) => {
-            if (clientList.length > 0) {
-                return clientList[0].focus();
-            }
-            return clients.openWindow('./index.html');
-        })
-    );
+    if (event.action === 'stop') {
+        // 停止アクションが選択された場合
+        event.waitUntil(
+            clients.matchAll().then((clientList) => {
+                if (clientList.length > 0) {
+                    clientList[0].postMessage({
+                        action: 'stopAllTimers'
+                    });
+                    return clientList[0].focus();
+                }
+                return clients.openWindow('./index.html');
+            })
+        );
+    } else {
+        // 通常のクリック
+        event.waitUntil(
+            clients.matchAll().then((clientList) => {
+                if (clientList.length > 0) {
+                    return clientList[0].focus();
+                }
+                return clients.openWindow('./index.html');
+            })
+        );
+    }
 });
 
 self.addEventListener('notificationclose', (event) => {
