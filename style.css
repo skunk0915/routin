@@ -1,0 +1,256 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f5f5;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px 0;
+    background-color: #4285f4;
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    font-size: 2rem;
+    font-weight: 300;
+}
+
+h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #4285f4;
+}
+
+h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #666;
+}
+
+.add-routine {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #555;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus {
+    outline: none;
+    border-color: #4285f4;
+    box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+}
+
+.btn-primary,
+.btn-secondary {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+.btn-primary {
+    background-color: #4285f4;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #3367d6;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background-color: #34a853;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.btn-secondary:hover {
+    background-color: #2e7d32;
+    transform: translateY(-1px);
+}
+
+.routine-list {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.routine-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    background-color: #fafafa;
+    transition: background-color 0.3s ease;
+}
+
+.routine-item:hover {
+    background-color: #f0f0f0;
+}
+
+.routine-item.active {
+    background-color: #e8f5e8;
+    border-color: #34a853;
+}
+
+.routine-info {
+    flex: 1;
+}
+
+.routine-name {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.routine-duration {
+    color: #666;
+    font-size: 14px;
+}
+
+.routine-timer {
+    font-size: 18px;
+    font-weight: 600;
+    color: #4285f4;
+    margin: 0 15px;
+}
+
+.routine-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-start,
+.btn-stop,
+.btn-delete {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-start {
+    background-color: #34a853;
+    color: white;
+}
+
+.btn-start:hover {
+    background-color: #2e7d32;
+}
+
+.btn-stop {
+    background-color: #ea4335;
+    color: white;
+}
+
+.btn-stop:hover {
+    background-color: #d33b2c;
+}
+
+.btn-delete {
+    background-color: #f0f0f0;
+    color: #666;
+}
+
+.btn-delete:hover {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+.notification-status {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.status-text {
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.status-text.success {
+    background-color: #e8f5e8;
+    color: #2e7d32;
+}
+
+.status-text.warning {
+    background-color: #fff3e0;
+    color: #f57c00;
+}
+
+.status-text.error {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .routine-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .routine-controls {
+        margin-top: 10px;
+        width: 100%;
+        justify-content: flex-end;
+    }
+    
+    .routine-timer {
+        margin: 10px 0;
+    }
+}

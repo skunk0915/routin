@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ルーチンタイマー</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="stylesheet" href="./style.css">
+    
+    <!-- PWA設定 -->
+    <meta name="theme-color" content="#4285f4">
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- iOS設定 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ルーチンタイマー">
+    <link rel="apple-touch-icon" href="img/favicon/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon.png">
+    <meta name="apple-touch-fullscreen" content="yes">
+    
+    <!-- Android設定 -->
+    <meta name="application-name" content="ルーチンタイマー">
+    
+    <!-- 汎用アイコン -->
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="img/favicon/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="img/favicon/android-chrome-512x512.png">
+    
+    <!-- オフライン対応 -->
+    <meta name="cache-control" content="no-cache">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ルーチンタイマー</h1>
+        </header>
+
+        <main>
+            <div class="add-routine">
+                <h2>新しいルーチンを追加</h2>
+                <div class="form-group">
+                    <label for="routine-name">名称:</label>
+                    <input type="text" id="routine-name" placeholder="例: 散歩">
+                </div>
+                <div class="form-group">
+                    <label for="routine-duration">時間 (分):</label>
+                    <input type="number" id="routine-duration" min="1" placeholder="例: 30">
+                </div>
+                <button id="add-routine-btn" class="btn-primary">追加</button>
+            </div>
+
+            <div class="routine-list">
+                <h2>登録済みルーチン</h2>
+                <div id="routines-container">
+                    <!-- ルーチンアイテムがここに動的に追加される -->
+                </div>
+            </div>
+
+            <div class="notification-status">
+                <h3>通知設定</h3>
+                <button id="enable-notifications" class="btn-secondary">通知を有効にする</button>
+                <div id="notification-permission-status" class="status-text"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="./app.js"></script>
+</body>
+</html>
